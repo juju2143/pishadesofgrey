@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>pi shades of grey</title>
+<style>
+*
+{
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+.c0{background-color: #000000;}
+.c1{background-color: #1a1a1a;}
+.c2{background-color: #333333;}
+.c3{background-color: #4d4d4d;}
+.c4{background-color: #666666;}
+.c5{background-color: #808080;}
+.c6{background-color: #999999;}
+.c7{background-color: #b3b3b3;}
+.c8{background-color: #cccccc;}
+.c9{background-color: #e6e6e6;}
+#pi
+{
+  word-break: break-all;
+}
+.num
+{
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+#footer
+{
+  background-color: rgba(255,255,255,0.5);
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  height: 1em;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
+}
+</style>
+</head>
+<body>
+<span id="pi"></span>
+<script>
+var threads = 20;
+var n;
+
+var w = [];
+
+window.onload = function(){
+
+for(i=0;i<threads;i++)
+{
+    w[i] = new Worker("pithread.js");
+    w[i].addEventListener('message', function(e){
+        if($("#pi div").length < e.data.n)
+        {
+            for(i=$("#pi div").length+1; i<=e.data.n; i++)
+            {
+                $("#pi").append("<div class=\"num\" id=\"i"+i+"\"></div>");
+            }
+        }
+        $("#i"+e.data.n).addClass("c"+e.data.pi);
+        this.postMessage((n=e.data.n+threads));
+        $("#n").text(n);
+    });
+    w[i].postMessage(i+1);
+    $("#threads").text(i+1);
+}
+}
+</script>
+<div id="footer">pi shades of grey | by <a href="http://twitter.com/juju2143">@juju2143</a> | <a href="http://toasters.rocks/post/113614647800/pi-shades-of-grey">Blog post</a> | Threads: <span id="threads"></span> | Generating #<span id="n"></span></div>
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+</body>
+</html>
